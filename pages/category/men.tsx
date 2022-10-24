@@ -1,29 +1,29 @@
 import type { NextPage } from 'next';
 import { Typography } from '@mui/material';
 
-import { ShopLayout } from '../components/layouts';
+import { ShopLayout } from '../../components/layouts';
 
-import { ProductList } from '../components/products';
-import { useProducts } from '../hooks';
-import { FullScreenLoading } from '../components/ui';
+import { ProductList } from '../../components/products';
+import { useProducts } from '../../hooks';
+import { FullScreenLoading } from '../../components/ui';
 
-const HomePage: NextPage = () => {
-  const { products, isLoading } = useProducts('/products');
+const MenPage: NextPage = () => {
+  const { products, isLoading } = useProducts('/products?gender=men');
 
   return (
     <ShopLayout
-      title={'Tesla Store - Home'}
+      title={'Tesla Store - Men'}
       pageDescription={'Here you can find best Tesla products'}
     >
       <Typography variant='h1' component='h1'>
-        Store
+        Men
       </Typography>
       <Typography variant='h2' sx={{ mb: 1 }}>
-        All products
+        Products for Men
       </Typography>
       {isLoading ? <FullScreenLoading /> : <ProductList products={products} />}
     </ShopLayout>
   );
 };
 
-export default HomePage;
+export default MenPage;

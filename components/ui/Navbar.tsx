@@ -11,8 +11,11 @@ import {
   Typography,
 } from '@mui/material';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
+import { useRouter } from 'next/router';
 
 export const Navbar = () => {
+  const { route } = useRouter();
+
   return (
     <AppBar>
       <Toolbar>
@@ -28,17 +31,23 @@ export const Navbar = () => {
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           <NextLink href='/category/men' passHref>
             <Link>
-              <Button>Men</Button>
+              <Button color={route === '/category/men' ? 'primary' : 'info'}>
+                Men
+              </Button>
             </Link>
           </NextLink>
           <NextLink href='/category/women' passHref>
             <Link>
-              <Button>Women</Button>
+              <Button color={route === '/category/women' ? 'primary' : 'info'}>
+                Women
+              </Button>
             </Link>
           </NextLink>
           <NextLink href='/category/kid' passHref>
             <Link>
-              <Button>Kids</Button>
+              <Button color={route === '/category/kid' ? 'primary' : 'info'}>
+                Kids
+              </Button>
             </Link>
           </NextLink>
         </Box>
