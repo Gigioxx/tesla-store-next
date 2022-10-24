@@ -4,17 +4,10 @@ import { Typography } from '@mui/material';
 import { ShopLayout } from '../components/layouts';
 
 import { ProductList } from '../components/products';
-
-import useSWR from 'swr';
-const fetcher = (...args: [key: string]) =>
-  fetch(...args).then((res) => res.json());
+import { useProducts } from '../hooks';
 
 const HomePage: NextPage = () => {
-  const { data, error } = useSWR('/api/products', fetcher);
-  if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading...</div>;
-
-  console.log(data);
+  const { products, isLoading } = useProducts('/products');
 
   return (
     <ShopLayout
@@ -27,9 +20,7 @@ const HomePage: NextPage = () => {
       <Typography variant='h2' sx={{ mb: 1 }}>
         All products
       </Typography>
-
-      {/* Remove any type later */}
-      <ProductList products={data} />
+      {isLoading ? <h1>Loading...</h1> : <ProductList products={products} />}
     </ShopLayout>
   );
 };
