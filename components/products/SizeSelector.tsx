@@ -1,5 +1,4 @@
-import { Button } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, Button } from '@mui/material';
 import { FC } from 'react';
 import { ISize } from './interfaces';
 
