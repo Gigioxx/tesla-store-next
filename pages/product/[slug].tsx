@@ -6,7 +6,7 @@ import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui';
 
 import { dbProducts } from '../../database';
-import { IProduct } from '../../components/products/interfaces';
+import { IProduct } from '../../interfaces';
 
 interface Props {
   product: IProduct;

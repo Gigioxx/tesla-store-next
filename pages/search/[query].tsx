@@ -5,7 +5,7 @@ import { ShopLayout } from '../../components/layouts';
 
 import { ProductList } from '../../components/products';
 import { dbProducts } from '../../database';
-import { IProduct } from '../../components/products/interfaces';
+import { IProduct } from '../../interfaces';
 
 interface Props {
   products: IProduct[];

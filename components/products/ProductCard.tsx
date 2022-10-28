@@ -9,7 +9,7 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { IProduct } from './interfaces';
+import { IProduct } from '../../interfaces';
 
 interface Props {
   product: IProduct;

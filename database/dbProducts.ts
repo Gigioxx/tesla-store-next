@@ -1,4 +1,4 @@
-import { IProduct } from '../components/products/interfaces';
+import { IProduct } from '../interfaces';
 import { Product } from '../models';
 import { db } from './';
 
