@@ -32,6 +32,17 @@ const ProductPage: NextPage<Props> = ({ product }) => {
     }));
   };
 
+  const onUpdateQuantity = (quantity: number) => {
+    setTempCartProduct((currentProduct) => ({
+      ...currentProduct,
+      quantity,
+    }));
+  };
+
+  const onAddProduct = () => {
+    console.log({ tempCartProduct });
+  };
+
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -51,7 +62,11 @@ const ProductPage: NextPage<Props> = ({ product }) => {
             {/* quantity */}
             <Box sx={{ my: 2 }}>
               <Typography variant='subtitle2'>Quantity</Typography>
-              <ItemCounter />
+              <ItemCounter
+                currentValue={tempCartProduct.quantity}
+                updatedQuantity={onUpdateQuantity}
+                maxValue={product.inStock > 10 ? 10 : product.inStock}
+              />
               <SizeSelector
                 // selectedSize={product.sizes[0]}
                 sizes={product.sizes}
@@ -62,7 +77,11 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 
             {/* Add to cart */}
             {product.inStock > 0 ? (
-              <Button color='secondary' className='circular-btn'>
+              <Button
+                color='secondary'
+                className='circular-btn'
+                onClick={onAddProduct}
+              >
                 {tempCartProduct.size ? 'Add to cart' : 'Select a size'}
               </Button>
             ) : (
