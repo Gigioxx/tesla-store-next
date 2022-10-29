@@ -13,13 +13,22 @@ import {
 
 import { ItemCounter } from '../ui';
 import { CartContext } from '../../context';
+import { ICartProduct } from '../../interfaces';
 
 interface Props {
   editable?: boolean;
 }
 
 export const CartList: FC<Props> = ({ editable = false }) => {
-  const { cart } = useContext(CartContext);
+  const { cart, updateCartQuantity } = useContext(CartContext);
+
+  const onNewCartProductQuantityValue = (
+    product: ICartProduct,
+    newQuantityValue: number
+  ) => {
+    product.quantity = newQuantityValue;
+    updateCartQuantity(product);
+  };
 
   return (
     <>
@@ -47,14 +56,16 @@ export const CartList: FC<Props> = ({ editable = false }) => {
             <Box display='flex' flexDirection='column'>
               <Typography variant='body1'>{product.title}</Typography>
               <Typography variant='body1'>
-                Size: <strong>M</strong>
+                Size: <strong>{product.size}</strong>
               </Typography>
 
               {editable ? (
                 <ItemCounter
                   currentValue={product.quantity}
                   maxValue={10}
-                  updatedQuantity={() => {}}
+                  updatedQuantity={(value) =>
+                    onNewCartProductQuantityValue(product, value)
+                  }
                 />
               ) : (
                 <Typography variant='h5'>
