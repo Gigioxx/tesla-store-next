@@ -24,10 +24,14 @@ export const CartList: FC<Props> = ({ editable = false }) => {
   return (
     <>
       {cart.map((product) => (
-        <Grid container spacing={2} key={product.slug} sx={{ mb: 1 }}>
+        <Grid
+          container
+          spacing={2}
+          key={product.slug + product.size}
+          sx={{ mb: 1 }}
+        >
           <Grid item xs={3}>
-            {/* TODO: Redirect to product page */}
-            <NextLink href='/product/slug' passHref>
+            <NextLink href={`/product/${product.slug}`} passHref>
               <Link>
                 <CardActionArea>
                   <CardMedia
