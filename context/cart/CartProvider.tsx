@@ -6,10 +6,18 @@ import { CartContext, cartReducer } from './';
 
 export interface CartState {
   cart: ICartProduct[];
+  numberOfItems: number;
+  subTotal: number;
+  tax: number;
+  total: number;
 }
 
 export const CART_INITIAL_STATE: CartState = {
   cart: [],
+  numberOfItems: 0,
+  subTotal: 0,
+  tax: 0,
+  total: 0,
 };
 
 export interface Props {
@@ -56,11 +64,11 @@ export const CartProvider: FC<Props> = ({ children }) => {
     const orderSummary = {
       numberOfItems: numberOfItems,
       subTotal,
-      taxRate: subTotal * taxRate,
+      tax: subTotal * taxRate,
       total: subTotal * (taxRate + 1),
     };
 
-    console.log(orderSummary);
+    dispatch({ type: '[Cart] - Update order summary', payload: orderSummary });
   }, [state.cart]);
 
   const addProductToCart = (product: ICartProduct) => {
