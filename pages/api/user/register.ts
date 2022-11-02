@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
 import { db } from '../../../database';
 import { User } from '../../../models';
-import { jwt } from '../../../utils';
+import { jwt, validations } from '../../../utils';
 
 type Data =
   | { message: string }
@@ -50,10 +50,11 @@ const registerUser = async (
     });
   }
 
-  //Todo: validate email format
-  //   if(email) {
-
-  //   }
+  if (!validations.isValidEmail(email)) {
+    return res.status(400).json({
+      message: 'Invalid email address',
+    });
+  }
 
   await db.connect();
   const user = await User.findOne({ email });
