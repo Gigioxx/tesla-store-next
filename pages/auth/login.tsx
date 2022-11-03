@@ -1,6 +1,16 @@
+import { useState } from 'react';
 import NextLink from 'next/link';
 
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
@@ -18,14 +28,22 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+  const [showError, setShowError] = useState(false);
+
   const onLoginUser = async ({ email, password }: FormData) => {
+    setShowError(false);
+
     try {
       const { data } = await teslaApi.post('/user/login', { email, password });
       const { token, user } = data;
       console.log({ token, user });
     } catch (error) {
       console.log('Credentials are not valid');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
     }
+
+    //Todo: navigate to route where the user was before login
   };
 
   return (
@@ -37,6 +55,13 @@ const LoginPage = () => {
               <Typography variant='h1' component='h1'>
                 Log In
               </Typography>
+              <Chip
+                label='The user / password are incorrect'
+                color='error'
+                icon={<ErrorOutline />}
+                className='fadeIn'
+                sx={{ display: showError ? 'flex' : 'none' }}
+              />
             </Grid>
 
             <Grid item xs={12}>
