@@ -1,4 +1,4 @@
-import { FC, useReducer } from 'react';
+import { FC, useReducer, useEffect } from 'react';
 import { AuthContext, authReducer } from './';
 import { teslaApi } from '../../api';
 import { IUser } from '../../interfaces';
@@ -21,6 +21,25 @@ export interface Props {
 
 export const AuthProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
+
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  const checkToken = async () => {
+    if (!Cookies.get('token')) {
+      return;
+    }
+
+    try {
+      const { data } = await teslaApi.get('/user/validate-token');
+      const { token, user } = data;
+      Cookies.set('token', token);
+      dispatch({ type: '[Auth] - Login', payload: user });
+    } catch (error) {
+      Cookies.remove('token');
+    }
+  };
 
   const loginUser = async (
     email: string,
