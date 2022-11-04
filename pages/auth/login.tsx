@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import NextLink from 'next/link';
 
 import {
@@ -12,9 +12,11 @@ import {
 } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
+import { AuthContext } from '../../context';
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
 import { teslaApi } from '../../api';
+import { useRouter } from 'next/router';
 
 type FormData = {
   email: string;
@@ -22,6 +24,8 @@ type FormData = {
 };
 
 const LoginPage = () => {
+  const router = useRouter();
+  const { loginUser } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -32,18 +36,19 @@ const LoginPage = () => {
 
   const onLoginUser = async ({ email, password }: FormData) => {
     setShowError(false);
+    console.log(email, password);
 
-    try {
-      const { data } = await teslaApi.post('/user/login', { email, password });
-      const { token, user } = data;
-      console.log({ token, user });
-    } catch (error) {
-      console.log('Credentials are not valid');
+    const isValidLogin = await loginUser(email, password);
+
+    if (!isValidLogin) {
       setShowError(true);
       setTimeout(() => setShowError(false), 3000);
+
+      return;
     }
 
     //Todo: navigate to route where the user was before login
+    router.replace('/');
   };
 
   return (
