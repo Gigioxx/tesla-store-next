@@ -15,7 +15,6 @@ import { useForm } from 'react-hook-form';
 import { AuthContext } from '../../context';
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
-import { teslaApi } from '../../api';
 import { useRouter } from 'next/router';
 
 type FormData = {
