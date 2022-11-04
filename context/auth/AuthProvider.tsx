@@ -3,6 +3,7 @@ import { AuthContext, authReducer } from './';
 import { teslaApi } from '../../api';
 import { IUser } from '../../interfaces';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export interface AuthState {
   isLoggedIn: boolean;
@@ -36,6 +37,38 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     }
   };
 
+  const registerUser = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<{ hasError: boolean; message?: string }> => {
+    try {
+      const { data } = await teslaApi.post('/user/register', {
+        name,
+        email,
+        password,
+      });
+      const { token, user } = data;
+      Cookies.set('token', token);
+      dispatch({ type: '[Auth] - Login', payload: user });
+      return {
+        hasError: false,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          hasError: true,
+          message: error.response?.data.message,
+        };
+      }
+
+      return {
+        hasError: true,
+        message: 'User could not be created, please try again later',
+      };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -43,6 +76,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
         // Methods
         loginUser,
+        registerUser,
       }}
     >
       {children}
