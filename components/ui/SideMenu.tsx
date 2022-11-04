@@ -27,11 +27,13 @@ import {
   VpnKeyOutlined,
 } from '@mui/icons-material';
 
-import { UiContext } from '../../context/ui/UiContext';
+import { AuthContext, UiContext } from '../../context';
 
 export const SideMenu = () => {
   const router = useRouter();
   const { isMenuOpen, toggleSideMenu } = useContext(UiContext);
+
+  const { isLoggedIn, user } = useContext(AuthContext);
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -73,19 +75,23 @@ export const SideMenu = () => {
             />
           </ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <AccountCircleOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Profile'} />
-          </ListItem>
+          {isLoggedIn && (
+            <>
+              <ListItem button>
+                <ListItemIcon>
+                  <AccountCircleOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Profile'} />
+              </ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <ConfirmationNumberOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Orders'} />
-          </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <ConfirmationNumberOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Orders'} />
+              </ListItem>
+            </>
+          )}
 
           <ListItem
             button
@@ -120,43 +126,49 @@ export const SideMenu = () => {
             <ListItemText primary={'Kids'} />
           </ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <VpnKeyOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Log In'} />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemIcon>
-              <LoginOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Log Out'} />
-          </ListItem>
+          {isLoggedIn ? (
+            <ListItem button>
+              <ListItemIcon>
+                <LoginOutlined />
+              </ListItemIcon>
+              <ListItemText primary={'Log Out'} />
+            </ListItem>
+          ) : (
+            <ListItem button>
+              <ListItemIcon>
+                <VpnKeyOutlined />
+              </ListItemIcon>
+              <ListItemText primary={'Log In'} />
+            </ListItem>
+          )}
 
           {/* Admin */}
-          <Divider />
-          <ListSubheader>Admin Panel</ListSubheader>
+          {user?.role === 'admin' && (
+            <>
+              <Divider />
+              <ListSubheader>Admin Panel</ListSubheader>
 
-          <ListItem button>
-            <ListItemIcon>
-              <CategoryOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Products'} />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <ConfirmationNumberOutlined />
-            </ListItemIcon>
-            <ListItemText primary={'Orders'} />
-          </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <CategoryOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Products'} />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <ConfirmationNumberOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Orders'} />
+              </ListItem>
 
-          <ListItem button>
-            <ListItemIcon>
-              <AdminPanelSettings />
-            </ListItemIcon>
-            <ListItemText primary={'Users'} />
-          </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <AdminPanelSettings />
+                </ListItemIcon>
+                <ListItemText primary={'Users'} />
+              </ListItem>
+            </>
+          )}
         </List>
       </Box>
     </Drawer>
