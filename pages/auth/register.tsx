@@ -15,7 +15,6 @@ import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '../../components/layouts';
 import { useForm } from 'react-hook-form';
 import { validations } from '../../utils';
-import { teslaApi } from '../../api';
 import { AuthContext } from '../../context';
 
 type FormData = {
@@ -48,8 +47,8 @@ const RegisterPage = () => {
       return;
     }
 
-    //Todo: navigate to page where user was before register
-    router.replace('/');
+    const destination = router.query.p?.toString() || '/';
+    router.replace(destination);
   };
 
   return (
@@ -132,7 +131,14 @@ const RegisterPage = () => {
             </Grid>
 
             <Grid item xs={12} display='flex' justifyContent='end'>
-              <NextLink href='/auth/login' passHref>
+              <NextLink
+                href={
+                  router.query.p
+                    ? `/auth/login?p=${router.query.p}`
+                    : '/auth/login'
+                }
+                passHref
+              >
                 <Link underline='always'>I already have an account</Link>
               </NextLink>
             </Grid>
