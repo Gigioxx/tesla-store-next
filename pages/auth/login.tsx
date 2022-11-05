@@ -47,7 +47,8 @@ const LoginPage = () => {
     }
 
     //Todo: navigate to route where the user was before login
-    router.replace('/');
+    const destination = router.query.p?.toString() || '/';
+    router.replace(destination);
   };
 
   return (
