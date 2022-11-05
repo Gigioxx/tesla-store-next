@@ -11,6 +11,7 @@ interface ContextProps {
     email: string,
     password: string
   ) => Promise<{ hasError: boolean; message?: string | undefined }>;
+  logout: () => void;
 }
 
 export const AuthContext = createContext({} as ContextProps);
