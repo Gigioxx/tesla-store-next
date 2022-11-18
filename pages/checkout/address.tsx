@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -6,7 +6,6 @@ import {
   FormControl,
   Grid,
   MenuItem,
-  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -43,6 +42,11 @@ const getAddressFromCookies = (): FormData => {
 const AddressPage = () => {
   const router = useRouter();
   const { updateAddress } = useContext(CartContext);
+  const [formCountry, setFormCountry] = useState('');
+
+  useEffect(() => {
+    setFormCountry(getAddressFromCookies().country);
+  }, []);
 
   const {
     register,
@@ -145,7 +149,8 @@ const AddressPage = () => {
                 select
                 variant='filled'
                 label='Country'
-                defaultValue={Cookies.get('country') || countries[0].code}
+                key={formCountry || countries[0].code}
+                defaultValue={formCountry || countries[0].code}
                 {...register('country', {
                   required: 'Country is required',
                 })}
