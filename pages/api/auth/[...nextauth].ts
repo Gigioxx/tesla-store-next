@@ -22,7 +22,6 @@ export default NextAuth({
       },
       async authorize(credentials) {
         console.log({ credentials });
-        // Todo: validate credentials with database values
         return await dbUsers.checkUserEmailPassword(
           credentials!.email,
           credentials!.password
@@ -40,12 +39,16 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, account, user }) {
       // console.log({ token, account, user });
+
       if (account) {
         token.accessToken = account.access_token;
 
         switch (account.type) {
           case 'oauth':
-            // todo: verify if user exists in database
+            token.user = await dbUsers.oAuthToDbUser(
+              user?.email || '',
+              user?.name || ''
+            );
             break;
 
           case 'credentials':
@@ -53,6 +56,7 @@ export default NextAuth({
             break;
         }
       }
+
       return token;
     },
 
