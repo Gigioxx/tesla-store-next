@@ -35,6 +35,12 @@ export default NextAuth({
     // ...add more providers here
   ],
 
+  // Custom pages
+  pages: {
+    signIn: '/auth/login',
+    newUser: '/auth/register',
+  },
+
   // Callbacks
   callbacks: {
     async jwt({ token, account, user }) {
