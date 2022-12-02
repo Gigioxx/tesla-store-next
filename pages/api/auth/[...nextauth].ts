@@ -21,7 +21,6 @@ export default NextAuth({
         },
       },
       async authorize(credentials) {
-        console.log({ credentials });
         return await dbUsers.checkUserEmailPassword(
           credentials!.email,
           credentials!.password
@@ -40,12 +39,15 @@ export default NextAuth({
     signIn: '/auth/login',
     newUser: '/auth/register',
   },
+  session: {
+    maxAge: 2592000,
+    strategy: 'jwt',
+    updateAge: 86400,
+  },
 
   // Callbacks
   callbacks: {
     async jwt({ token, account, user }) {
-      // console.log({ token, account, user });
-
       if (account) {
         token.accessToken = account.access_token;
 
@@ -67,8 +69,6 @@ export default NextAuth({
     },
 
     async session({ session, token, user }) {
-      // console.log({ session, token, user });
-
       session.accessToken = token.accessToken as string;
       session.user = token.user as any;
 
