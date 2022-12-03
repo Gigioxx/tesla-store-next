@@ -1,33 +1,19 @@
-// middleware.ts
 import { NextResponse, NextRequest } from 'next/server';
-import * as jose from 'jose';
+import { getToken } from 'next-auth/jwt';
+// import * as jose from 'jose';
 
 export async function middleware(req: NextRequest) {
-  if (req.nextUrl.pathname.startsWith('/checkout')) {
-    const response = NextResponse.next();
+  const session = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-    const token = req.cookies.get('token');
-    let isValidToken = false;
-
-    try {
-      await jose.jwtVerify(
-        token || '',
-        new TextEncoder().encode(process.env.JWT_SECRET_SEED)
-      );
-      isValidToken = true;
-      return NextResponse.next();
-    } catch (error) {
-      console.error(`JWT Invalid or not signed in`, { error });
-      isValidToken = false;
-    }
-
-    if (!isValidToken) {
-      const { pathname } = req.nextUrl;
-      return NextResponse.redirect(
-        new URL(`/auth/login?p=${pathname}`, req.url)
-      );
-    }
+  if (!session) {
+    const { pathname } = req.nextUrl;
+    return NextResponse.redirect(new URL(`/auth/login?p=${pathname}`, req.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
