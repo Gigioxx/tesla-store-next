@@ -35,10 +35,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     }
   }, [status, data]);
 
-  // useEffect(() => {
-  //   checkToken();
-  // }, []);
-
   const checkToken = async () => {
     if (!Cookies.get('token')) {
       return;
@@ -114,9 +110,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     Cookies.remove('phone');
 
     signOut();
-
-    // router.reload();
-    // Cookies.remove('token');
   };
 
   return (
