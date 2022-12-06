@@ -1,7 +1,7 @@
 import { FC, useEffect, useReducer } from 'react';
 import Cookie from 'js-cookie';
 
-import { ICartProduct, ShippingAddress } from '../../interfaces';
+import { ICartProduct, IOrder, ShippingAddress } from '../../interfaces';
 import { CartContext, cartReducer } from './';
 import { teslaApi } from '../../api';
 
@@ -160,8 +160,25 @@ export const CartProvider: FC<Props> = ({ children }) => {
   };
 
   const createOrder = async () => {
+    if (!state.shippingAddress) {
+      throw new Error('No shipping address');
+    }
+
+    const body: IOrder = {
+      orderItems: state.cart.map((p) => ({
+        ...p,
+        size: p.size!,
+      })),
+      shippingAddress: state.shippingAddress,
+      numberOfItems: state.numberOfItems,
+      subTotal: state.subTotal,
+      tax: state.tax,
+      total: state.total,
+      isPaid: false,
+    };
+
     try {
-      const { data } = await teslaApi.post('/orders');
+      const { data } = await teslaApi.post('/orders', body);
 
       console.log({ data });
     } catch (error) {
