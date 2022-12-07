@@ -21,81 +21,98 @@ import {
 } from '@mui/icons-material';
 import { dbOrders } from '../../database';
 import { IOrder } from '../../interfaces';
+import { countries } from '../../utils';
 
 interface Props {
   order: IOrder;
 }
 
 const OrderPage: NextPage<Props> = ({ order }) => {
+  const { shippingAddress } = order;
+  const countryName = countries.filter(
+    (item) => item.code === shippingAddress.country
+  )[0].name;
+
   return (
-    <ShopLayout
-      title='Order summary #123123123'
-      pageDescription='Order summary'
-    >
+    <ShopLayout title='Order summary' pageDescription='Order summary'>
       <Typography variant='h1' component='h1'>
-        Order: #ABC123
+        Order: {order._id}
       </Typography>
 
-      {/* <Chip
-        sx={{ my: 2 }}
-        label='Pending payment'
-        variant='outlined'
-        color='error'
-        icon={<CreditCardOffOutlined />}
-      /> */}
-
-      <Chip
-        sx={{ my: 2 }}
-        label='Payment successful'
-        variant='outlined'
-        color='success'
-        icon={<CreditScoreOutlined />}
-      />
+      {order.isPaid ? (
+        <Chip
+          sx={{ my: 2 }}
+          label='Payment successful'
+          variant='outlined'
+          color='success'
+          icon={<CreditScoreOutlined />}
+        />
+      ) : (
+        <Chip
+          sx={{ my: 2 }}
+          label='Pending payment'
+          variant='outlined'
+          color='error'
+          icon={<CreditCardOffOutlined />}
+        />
+      )}
 
       <Grid container>
         <Grid item xs={12} sm={7}>
-          <CartList />
+          <CartList products={order.orderItems} />
         </Grid>
         <Grid item xs={12} sm={5}>
           <Card className='summary-card'>
             <CardContent>
-              <Typography variant='h2'>Summary(3 items)</Typography>
+              <Typography variant='h2'>
+                Summary ({order.numberOfItems}{' '}
+                {order.numberOfItems > 1 ? 'Items' : 'Item'})
+              </Typography>
               <Divider sx={{ my: 1 }} />
 
               <Box display='flex' justifyContent='space-between'>
                 <Typography variant='subtitle1'>Shipping address</Typography>
-                <NextLink href='/checkout/address' passHref>
-                  <Link underline='always'>Edit</Link>
-                </NextLink>
               </Box>
 
-              <Typography>Guillermo Casanova</Typography>
-              <Typography>Calle falsa 123</Typography>
-              <Typography>Ciudad 123, 1234567</Typography>
-              <Typography>Chile</Typography>
-              <Typography>+123 12341234</Typography>
+              <Typography>
+                {shippingAddress.firstName} {shippingAddress.lastName}
+              </Typography>
+              <Typography>
+                {shippingAddress.address}{' '}
+                {shippingAddress.address2
+                  ? `, ${shippingAddress.address2}`
+                  : ''}
+              </Typography>
+              <Typography>
+                {shippingAddress.city} {shippingAddress.zip}
+              </Typography>
+              <Typography>{countryName}</Typography>
+              <Typography>{shippingAddress.phone}</Typography>
 
               <Divider sx={{ my: 1 }} />
 
-              <Box display='flex' justifyContent='end'>
-                <NextLink href='/cart' passHref>
-                  <Link underline='always'>Edit</Link>
-                </NextLink>
-              </Box>
+              <OrderSummary
+                orderValues={{
+                  numberOfItems: order.numberOfItems,
+                  subTotal: order.subTotal,
+                  total: order.total,
+                  tax: order.tax,
+                }}
+              />
 
-              <OrderSummary />
-
-              <Box sx={{ mt: 3 }}>
+              <Box sx={{ mt: 3 }} display='flex' flexDirection='column'>
                 {/* TODO */}
-                <h1>Pay order</h1>
-
-                <Chip
-                  sx={{ my: 2 }}
-                  label='Payment successful'
-                  variant='outlined'
-                  color='success'
-                  icon={<CreditScoreOutlined />}
-                />
+                {order.isPaid ? (
+                  <Chip
+                    sx={{ my: 2 }}
+                    label='Payment successful'
+                    variant='outlined'
+                    color='success'
+                    icon={<CreditScoreOutlined />}
+                  />
+                ) : (
+                  <h1>Pay order</h1>
+                )}
               </Box>
             </CardContent>
           </Card>
