@@ -185,6 +185,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
       const { data } = await teslaApi.post<IOrder>('/orders', body);
 
       dispatch({ type: '[Cart] - Order completed' });
+      Cookie.set('cart', JSON.stringify([]));
 
       return {
         hasError: false,
