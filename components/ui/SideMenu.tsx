@@ -10,6 +10,7 @@ import {
   InputAdornment,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   ListSubheader,
@@ -28,6 +29,7 @@ import {
 } from '@mui/icons-material';
 
 import { AuthContext, UiContext } from '../../context';
+import { DashboardOutlined } from '@mui/icons-material';
 
 export const SideMenu = () => {
   const router = useRouter();
@@ -77,24 +79,23 @@ export const SideMenu = () => {
 
           {isLoggedIn && (
             <>
-              <ListItem button>
+              <ListItemButton>
                 <ListItemIcon>
                   <AccountCircleOutlined />
                 </ListItemIcon>
                 <ListItemText primary={'Profile'} />
-              </ListItem>
+              </ListItemButton>
 
-              <ListItem button onClick={() => navigateTo('/orders/history')}>
+              <ListItemButton onClick={() => navigateTo('/orders/history')}>
                 <ListItemIcon>
                   <ConfirmationNumberOutlined />
                 </ListItemIcon>
                 <ListItemText primary={'Orders'} />
-              </ListItem>
+              </ListItemButton>
             </>
           )}
 
-          <ListItem
-            button
+          <ListItemButton
             sx={{ display: { xs: '', sm: 'none' } }}
             onClick={() => navigateTo('/category/men')}
           >
@@ -102,10 +103,9 @@ export const SideMenu = () => {
               <MaleOutlined />
             </ListItemIcon>
             <ListItemText primary={'Men'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem
-            button
+          <ListItemButton
             sx={{ display: { xs: '', sm: 'none' } }}
             onClick={() => navigateTo('/category/women')}
           >
@@ -113,10 +113,9 @@ export const SideMenu = () => {
               <FemaleOutlined />
             </ListItemIcon>
             <ListItemText primary={'Women'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem
-            button
+          <ListItemButton
             sx={{ display: { xs: '', sm: 'none' } }}
             onClick={() => navigateTo('/category/kid')}
           >
@@ -124,25 +123,24 @@ export const SideMenu = () => {
               <EscalatorWarningOutlined />
             </ListItemIcon>
             <ListItemText primary={'Kids'} />
-          </ListItem>
+          </ListItemButton>
 
           {isLoggedIn ? (
-            <ListItem button onClick={logout}>
+            <ListItemButton onClick={logout}>
               <ListItemIcon>
                 <LoginOutlined />
               </ListItemIcon>
               <ListItemText primary={'Log Out'} />
-            </ListItem>
+            </ListItemButton>
           ) : (
-            <ListItem
-              button
+            <ListItemButton
               onClick={() => navigateTo(`/auth/login?p=${router.asPath}`)}
             >
               <ListItemIcon>
                 <VpnKeyOutlined />
               </ListItemIcon>
               <ListItemText primary={'Log In'} />
-            </ListItem>
+            </ListItemButton>
           )}
 
           {/* Admin */}
@@ -151,25 +149,33 @@ export const SideMenu = () => {
               <Divider />
               <ListSubheader>Admin Panel</ListSubheader>
 
-              <ListItem button>
+              <ListItemButton onClick={() => navigateTo('/admin')}>
+                <ListItemIcon>
+                  <DashboardOutlined />
+                </ListItemIcon>
+                <ListItemText primary={'Dashboard'} />
+              </ListItemButton>
+
+              <ListItemButton>
                 <ListItemIcon>
                   <CategoryOutlined />
                 </ListItemIcon>
                 <ListItemText primary={'Products'} />
-              </ListItem>
-              <ListItem button>
+              </ListItemButton>
+
+              <ListItemButton>
                 <ListItemIcon>
                   <ConfirmationNumberOutlined />
                 </ListItemIcon>
                 <ListItemText primary={'Orders'} />
-              </ListItem>
+              </ListItemButton>
 
-              <ListItem button>
+              <ListItemButton>
                 <ListItemIcon>
                   <AdminPanelSettings />
                 </ListItemIcon>
                 <ListItemText primary={'Users'} />
-              </ListItem>
+              </ListItemButton>
             </>
           )}
         </List>
