@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
     );
   }
 
-  const validRoles = ['admin'];
+  const validRoles = ['admin', 'super-user', 'SEO'];
   if (req.nextUrl.pathname.startsWith('/admin')) {
     if (!validRoles.includes(session.user.role)) {
       return NextResponse.redirect(new URL('/', req.url));
