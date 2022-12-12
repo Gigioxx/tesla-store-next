@@ -72,7 +72,9 @@ const registerUser = async (
 
   try {
     await newUser.save({ validateBeforeSave: true });
+    await db.disconnect();
   } catch (error) {
+    await db.disconnect();
     console.log(error);
     return res
       .status(500)

@@ -16,6 +16,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  await db.connect();
+
   const [
     numberOfOrders,
     paidOrders,
