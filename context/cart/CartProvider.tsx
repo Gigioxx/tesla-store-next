@@ -27,11 +27,11 @@ export const CART_INITIAL_STATE: CartState = {
   shippingAddress: undefined,
 };
 
-export interface Props {
+export interface CartProps {
   children: React.ReactNode;
 }
 
-export const CartProvider: FC<Props> = ({ children }) => {
+export const CartProvider: FC<CartProps> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
   useEffect(() => {

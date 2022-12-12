@@ -9,11 +9,11 @@ const UI_INITIAL_STATE: UiState = {
   isMenuOpen: false,
 };
 
-export interface Props {
+export interface UiProps {
   children: React.ReactNode;
 }
 
-export const UiProvider: FC<Props> = ({ children }) => {
+export const UiProvider: FC<UiProps> = ({ children }) => {
   const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
 
   const toggleSideMenu = () => {
