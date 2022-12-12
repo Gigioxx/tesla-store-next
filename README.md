@@ -26,6 +26,13 @@ JWT_SECRET_SEED=
 NEXTAUTH_SECRET=
 ```
 
+- NextAuth URL:
+  Use your url from Vercel or localhost to allow users to login with different providers.
+
+```
+NEXTAUTH_URL=
+```
+
 - TAX Rate:
   You can set the custom taxRate for your store.
   Example: 0.16 for 16% tax rate.
