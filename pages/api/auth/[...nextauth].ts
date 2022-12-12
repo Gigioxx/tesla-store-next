@@ -20,7 +20,7 @@ export default NextAuth({
           placeholder: 'Password',
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<any> {
         return await dbUsers.checkUserEmailPassword(
           credentials!.email,
           credentials!.password
