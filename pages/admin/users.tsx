@@ -7,7 +7,7 @@ import { Grid, MenuItem, Select } from '@mui/material';
 
 import { AdminLayout } from '../../components/layouts';
 import { IUser } from '../../interfaces';
-import teslaApi from '../../api/teslaApi';
+import teslaApi from '../../axiosApi/teslaApi';
 
 const UsersPage = () => {
   const { data, error } = useSWR<IUser[]>('/api/admin/users');

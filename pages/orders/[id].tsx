@@ -24,7 +24,7 @@ import {
 import { dbOrders } from '../../database';
 import { IOrder } from '../../interfaces';
 import { countries } from '../../utils';
-import teslaApi from '../../api/teslaApi';
+import teslaApi from '../../axiosApi/teslaApi';
 
 export type OrderResponseBody = {
   id: string;
