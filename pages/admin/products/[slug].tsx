@@ -1,13 +1,12 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { GetServerSideProps } from 'next';
-import { AdminLayout } from '../../../components/layouts';
-import { IProduct } from '../../../interfaces';
+import { useForm } from 'react-hook-form';
+
 import {
   DriveFileRenameOutline,
   SaveOutlined,
   UploadOutlined,
 } from '@mui/icons-material';
-import { dbProducts } from '../../../database';
 import {
   Box,
   Button,
@@ -30,16 +29,46 @@ import {
   TextField,
 } from '@mui/material';
 
+import { dbProducts } from '../../../database';
+import { AdminLayout } from '../../../components/layouts';
+import { IProduct } from '../../../interfaces';
+
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
 const validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+
+interface FormData {
+  _id?: string;
+  description: string;
+  images: string[];
+  inStock: number;
+  price: number;
+  sizes: string[];
+  slug: string;
+  tags: string[];
+  title: string;
+  type: string;
+  gender: string;
+}
 
 interface Props {
   product: IProduct;
 }
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: product,
+  });
+
   const onDeleteTag = (tag: string) => {};
+
+  const onSubmit = (form: FormData) => {
+    console.log({ form });
+  };
 
   return (
     <AdminLayout
@@ -47,7 +76,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
       subtitle={`Editing: ${product.title}`}
       icon={<DriveFileRenameOutline />}
     >
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box display='flex' justifyContent='end' sx={{ mb: 1 }}>
           <Button
             color='secondary'
@@ -67,12 +96,12 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
-              // { ...register('name', {
-              //     required: 'This field is required',
-              //     minLength: { value: 2, message: 'At least 2 characters' }
-              // })}
-              // error={ !!errors.name }
-              // helperText={ errors.name?.message }
+              {...register('title', {
+                required: 'This field is required',
+                minLength: { value: 2, message: 'At least 2 characters' },
+              })}
+              error={!!errors.title}
+              helperText={errors.title?.message}
             />
 
             <TextField
@@ -80,7 +109,13 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               multiline
+              rows={7}
               sx={{ mb: 1 }}
+              {...register('description', {
+                required: 'This field is required',
+              })}
+              error={!!errors.description}
+              helperText={errors.description?.message}
             />
 
             <TextField
@@ -89,6 +124,12 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
+              {...register('inStock', {
+                required: 'This field is required',
+                min: { value: 0, message: 'Must be greater than 0' },
+              })}
+              error={!!errors.inStock}
+              helperText={errors.inStock?.message}
             />
 
             <TextField
@@ -97,6 +138,12 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
+              {...register('price', {
+                required: 'This field is required',
+                min: { value: 0, message: 'Must be greater than 0' },
+              })}
+              error={!!errors.price}
+              helperText={errors.price?.message}
             />
 
             <Divider sx={{ my: 1 }} />
@@ -156,6 +203,13 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
+              {...register('slug', {
+                required: 'This field is required',
+                validate: (val) =>
+                  val.trim().includes(' ') ? 'No spaces allowed' : undefined,
+              })}
+              error={!!errors.slug}
+              helperText={errors.slug?.message}
             />
 
             <TextField
