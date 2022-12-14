@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
 
@@ -62,9 +62,27 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     formState: { errors },
     getValues,
     setValue,
+    watch,
   } = useForm<FormData>({
     defaultValues: product,
   });
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name === 'title') {
+        const regex = /[^a-zA-Z0-9_]/gi;
+        const newSlug =
+          value.title
+            ?.trim()
+            .replaceAll(' ', '_')
+            .replaceAll(regex, '')
+            .toLocaleLowerCase() || '';
+        setValue('slug', newSlug);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
 
   const onChangeSize = (size: string) => {
     const currentSizes = getValues('sizes');
