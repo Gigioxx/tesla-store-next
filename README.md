@@ -57,6 +57,13 @@ NEXT_PUBLIC_PAYPAL_CLIENT=
 PAYPAL_SECRET=
 ```
 
+- Cloudinary URL:
+  Use your url from Cloudinary to allow admin users upload images.
+
+```
+CLOUDINARY_URL=
+```
+
 ## Run the project
 
 - Rebuild node modules and start Next development project:
