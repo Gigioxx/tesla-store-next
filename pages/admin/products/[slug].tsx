@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -23,8 +23,6 @@ import {
   FormGroup,
   FormLabel,
   Grid,
-  ListItem,
-  Paper,
   Radio,
   RadioGroup,
   TextField,
@@ -60,6 +58,7 @@ interface Props {
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [newTagValue, setNewTagValue] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -121,6 +120,36 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     setValue('tags', updatedTags, { shouldValidate: true });
   };
 
+  const onFilesSelected = async ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (!target.files || target.files.length === 0) {
+      return;
+    }
+
+    try {
+      for (const file of target.files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await teslaApi.post<{ message: string }>(
+          '/admin/upload',
+          formData
+        );
+        setValue('images', [...getValues('images'), data.message], {
+          shouldValidate: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onDeleteImage = (image: string) => {
+    setValue(
+      'images',
+      getValues('images').filter((img) => img !== image),
+      { shouldValidate: true }
+    );
+  };
+
   const onSubmit = async (form: FormData) => {
     if (form.images.length < 2) return alert('Please upload at least 2 images');
     setIsSaving(true);
@@ -132,7 +161,6 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
         data: form,
       });
 
-      console.log({ data });
       if (!form._id) {
         router.replace(`/admin/products/${form.slug}`);
       } else {
@@ -184,7 +212,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               multiline
-              rows={7}
+              rows={10}
               sx={{ mb: 1 }}
               {...register('description', {
                 required: 'This field is required',
@@ -340,9 +368,18 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                 fullWidth
                 startIcon={<UploadOutlined />}
                 sx={{ mb: 3 }}
+                onClick={() => fileInputRef.current?.click()}
               >
                 Upload image
               </Button>
+              <input
+                ref={fileInputRef}
+                type='file'
+                multiple
+                accept='image/png, image/gif, image/jpeg'
+                style={{ display: 'none' }}
+                onChange={onFilesSelected}
+              />
 
               <Chip
                 label='You must upload at least 2 images'
@@ -351,7 +388,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               />
 
               <Grid container spacing={2}>
-                {product.images.map((img) => (
+                {getValues('images').map((img) => (
                   <Grid item xs={4} sm={3} key={img}>
                     <Card>
                       <CardMedia
@@ -361,7 +398,11 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                         alt={img}
                       />
                       <CardActions>
-                        <Button fullWidth color='error'>
+                        <Button
+                          fullWidth
+                          color='error'
+                          onClick={() => onDeleteImage(img)}
+                        >
                           Delete
                         </Button>
                       </CardActions>
