@@ -1,6 +1,6 @@
 import NextLink from 'next/link';
-import { CategoryOutlined } from '@mui/icons-material';
-import { CardMedia, Grid, Link } from '@mui/material';
+import { AddOutlined, CategoryOutlined } from '@mui/icons-material';
+import { Box, Button, CardMedia, Grid, Link } from '@mui/material';
 import useSWR from 'swr';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { AdminLayout } from '../../components/layouts';
@@ -66,6 +66,15 @@ const ProductsPage = () => {
       subtitle='Manage products'
       icon={<CategoryOutlined />}
     >
+      <Box display='flex' justifyContent='end' sx={{ mb: 2 }}>
+        <Button
+          startIcon={<AddOutlined />}
+          color='secondary'
+          href='/admin/products/new'
+        >
+          Create product
+        </Button>
+      </Box>
       <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
         <DataGrid
           rows={rows}
