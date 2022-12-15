@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -33,6 +34,7 @@ import { dbProducts } from '../../../database';
 import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
 import teslaApi from '../../../axiosApi/teslaApi';
+import { Product } from '../../../models';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -57,6 +59,7 @@ interface Props {
 }
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
+  const router = useRouter();
   const [newTagValue, setNewTagValue] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -125,13 +128,13 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     try {
       const { data } = await teslaApi({
         url: '/admin/products',
-        method: 'PUT', // evaluate if we have _id, then edit, else create
+        method: form._id ? 'PUT' : 'POST',
         data: form,
       });
 
       console.log({ data });
       if (!form._id) {
-        //todo: reload page
+        router.replace(`/admin/products/${form.slug}`);
       } else {
         setIsSaving(false);
       }
@@ -377,7 +380,16 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { slug = '' } = query;
 
-  const product = await dbProducts.getProductBySlug(slug.toString());
+  let product: IProduct | null;
+
+  if (slug === 'new') {
+    const tempProduct = JSON.parse(JSON.stringify(new Product()));
+    delete tempProduct._id;
+    tempProduct.images = ['img1.jpg', 'img2.jpg'];
+    product = tempProduct;
+  } else {
+    product = await dbProducts.getProductBySlug(slug.toString());
+  }
 
   if (!product) {
     return {
