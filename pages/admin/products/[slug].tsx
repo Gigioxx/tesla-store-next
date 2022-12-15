@@ -385,6 +385,9 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                 label='You must upload at least 2 images'
                 color='error'
                 variant='outlined'
+                sx={{
+                  display: getValues('images').length < 2 ? 'flex' : 'none',
+                }}
               />
 
               <Grid container spacing={2}>
@@ -394,7 +397,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                       <CardMedia
                         component='img'
                         className='fadeIn'
-                        image={`/products/${img}`}
+                        image={img}
                         alt={img}
                       />
                       <CardActions>
@@ -426,7 +429,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   if (slug === 'new') {
     const tempProduct = JSON.parse(JSON.stringify(new Product()));
     delete tempProduct._id;
-    tempProduct.images = ['img1.jpg', 'img2.jpg'];
+    tempProduct.images = [];
     product = tempProduct;
   } else {
     product = await dbProducts.getProductBySlug(slug.toString());
